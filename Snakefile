@@ -1,3 +1,6 @@
+################################################################################
+# Dependencies 
+# module load bio/cellranger/3.0.1
 
 rule check_path:
     input:
@@ -5,22 +8,20 @@ rule check_path:
     output:
         "checks/PATH"
     shell:
-        "echo $PATH > {output}"
+        r"echo $PATH | sed 's/:/\n/g' > {output}"
 
-rule test_cellranger:
+rule cellranger_testrun:
     input:
         "Snakefile"
     output:
-        "checks/tiny"
+        "checks/cellranger_testrun"
     shell:
         """
-        cellranger testrun --id=tiny --localcores 4 --localmem=64 &&
-        touch {output}
+        cellranger testrun --id=cellranger_testrun &&
+        mv cellranger_testrun checks
         """
-    
-# Note that cellranger must already by on the PATH
-# i.e., module load bio/cellranger/3.0.1
-rule cellranger:
+
+rule cellranger_samples:
     input:
         "data/{sample}_fastqs"
     output:
