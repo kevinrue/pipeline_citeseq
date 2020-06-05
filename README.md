@@ -23,4 +23,12 @@ https://snakemake.readthedocs.io/en/stable/getting_started/installation.html
 mamba create -c conda-forge -c bioconda -n snakemake snakemake
 conda activate snakemake
 mamba install -c conda-forge jupyterlab
+mamba install -c anaconda drmaa
 ```
+
+## Write the pipeline
+
+Various pipelines:
+
+- [Snakemake](Snakefile).
+- [CGAT pipeline](pipelines/pipeline_cellranger.py)

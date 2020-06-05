@@ -1,0 +1,5 @@
+cellranger:
+    # memory in GB
+    memory: 32
+    # number of parallel threads
+    threads: 4
