@@ -15,6 +15,9 @@ rule cellranger_testrun:
         "Snakefile"
     output:
         "checks/cellranger_testrun"
+    threads: 4
+    resources:
+        mem_mb=32 * 1024
     shell:
         """
         cellranger testrun --id=cellranger_testrun &&
@@ -26,13 +29,17 @@ rule cellranger_samples:
         "data/{sample}_fastqs"
     output:
         "cellranger_count/{sample}"
+    threads: 12
+    resources:
+        mem_mb=256 * 1024
     shell:
         """
-        cellranger count --id={sample} \
-                   --libraries={sample}_library.csv \
-                   --transcriptome=/ifs/mirror/10xgenomics/refdata-cellranger-GRCh38-3.0.0 \
-                   --feature-ref={sample}_feature_ref.csv \
+        cellranger count --id={sample}
+                   --libraries={sample}_library.csv
+                   --transcriptome=/ifs/mirror/10xgenomics/refdata-cellranger-GRCh38-3.0.0
+                   --feature-ref={sample}_feature_ref.csv
                    --expect-cells=1000
-                   --jobmode sge
-                   --mempercore=256
+                   --jobmode=local
+                   --localcores=12
+                   --localmem=32
         """
