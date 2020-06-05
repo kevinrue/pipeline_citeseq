@@ -2,6 +2,12 @@
 # Dependencies 
 # module load bio/cellranger/3.0.1
 
+SAMPLES = ["pbmc_1k_protein_v3"]
+
+rule all:
+    input:
+        "cellranger_count/.done"
+
 rule check_path:
     input:
         "Snakefile"
@@ -21,7 +27,7 @@ rule cellranger_testrun:
     shell:
         """
         cellranger testrun --id=cellranger_testrun &&
-        mv cellranger_testrun checks
+        mv cellranger_testrun checks/
         """
 
 rule cellranger_samples:
@@ -41,5 +47,14 @@ rule cellranger_samples:
                    --expect-cells=1000
                    --jobmode=local
                    --localcores=12
-                   --localmem=32
+                   --localmem=32 &&
+        mv {sample} cellranger_count/
         """
+
+rule cellranger:
+    input:
+        expand("cellranger_count/{sample}", sample=SAMPLES)
+    output:
+        "cellranger_count/.done"
+    shell:
+        "touch {output}"
