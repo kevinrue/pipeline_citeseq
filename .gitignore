@@ -3,5 +3,6 @@
 .RData
 .Ruserdata
 README.html
-pkgs
+pkgs/
 .ipynb_checkpoints
+tests/
