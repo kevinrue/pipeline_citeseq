@@ -4,5 +4,4 @@
 .Ruserdata
 README.html
 pkgs/
-.ipynb_checkpoints
-tests/
+data/
