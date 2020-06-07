@@ -6,7 +6,7 @@ SAMPLES = ["pbmc_1k_protein_v3"]
 
 rule all:
     input:
-        "cellranger_count.done"
+        "cellranger_count/.done"
 
 rule check_path:
     input:
@@ -20,7 +20,7 @@ rule cellranger_testrun:
     input:
         "Snakefile"
     output:
-        "checks/cellranger_testrun"
+        directory("checks/cellranger_testrun")
     threads: 4
     resources:
         mem_mb=32 * 1024
@@ -34,10 +34,10 @@ rule cellranger_samples:
     input:
         "data/{sample}_library.csv"
     output:
-        "cellranger_count/{sample}"
-    threads: 4
+        directory("cellranger_count/{sample}")
+    threads: 24
     resources:
-        mem_mb=12 * 1024
+        mem_mb=256 * 1024
     shell:
         """
         cellranger count --id={wildcards.sample} \
@@ -46,8 +46,8 @@ rule cellranger_samples:
                    --feature-ref=data/{wildcards.sample}_feature_ref.csv \
                    --expect-cells=1000 \
                    --jobmode=local \
-                   --localcores=4 \
-                   --localmem=12 &&
+                   --localcores=24 \
+                   --localmem=256 &&
         mv {wildcards.sample} {output}
         """
 
@@ -55,6 +55,6 @@ rule cellranger:
     input:
         expand("cellranger_count/{sample}", sample=SAMPLES)
     output:
-        "cellranger_count.done"
+        "cellranger_count/.done"
     shell:
         "touch {output}"
