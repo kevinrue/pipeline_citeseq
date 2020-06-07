@@ -6,7 +6,7 @@ SAMPLES = ["pbmc_1k_protein_v3"]
 
 rule all:
     input:
-        "cellranger_count/.done"
+        "cellranger_count.done"
 
 rule check_path:
     input:
@@ -32,29 +32,29 @@ rule cellranger_testrun:
 
 rule cellranger_samples:
     input:
-        "data/{sample}_fastqs"
+        "data/{sample}_library.csv"
     output:
         "cellranger_count/{sample}"
-    threads: 12
+    threads: 4
     resources:
-        mem_mb=256 * 1024
+        mem_mb=12 * 1024
     shell:
         """
-        cellranger count --id={sample}
-                   --libraries={sample}_library.csv
-                   --transcriptome=/ifs/mirror/10xgenomics/refdata-cellranger-GRCh38-3.0.0
-                   --feature-ref={sample}_feature_ref.csv
-                   --expect-cells=1000
-                   --jobmode=local
-                   --localcores=12
-                   --localmem=32 &&
-        mv {sample} cellranger_count/
+        cellranger count --id={wildcards.sample} \
+                   --libraries=data/{wildcards.sample}_library.csv \
+                   --transcriptome=/ifs/mirror/10xgenomics/refdata-cellranger-GRCh38-3.0.0 \
+                   --feature-ref=data/{wildcards.sample}_feature_ref.csv \
+                   --expect-cells=1000 \
+                   --jobmode=local \
+                   --localcores=4 \
+                   --localmem=12 &&
+        mv {wildcards.sample} {output}
         """
 
 rule cellranger:
     input:
         expand("cellranger_count/{sample}", sample=SAMPLES)
     output:
-        "cellranger_count/.done"
+        "cellranger_count.done"
     shell:
         "touch {output}"
