@@ -2,7 +2,7 @@
 # Dependencies 
 # module load bio/cellranger/3.0.1
 
-SAMPLES = ["pbmc_1k_protein_v3"]
+configfile: "config.yaml"
 
 rule all:
     input:
@@ -53,7 +53,7 @@ rule cellranger_samples:
 
 rule cellranger:
     input:
-        expand("cellranger_count/{sample}", sample=SAMPLES)
+        expand("cellranger_count/{sample}", sample=config["samples"])
     output:
         "cellranger_count/.done"
     shell:
