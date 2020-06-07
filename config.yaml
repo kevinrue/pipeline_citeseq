@@ -1,2 +1,1 @@
-samples:
-  - pbmc_1k_protein_v3
+samples: data/samples.tsv
